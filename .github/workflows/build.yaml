@@ -1,4 +1,4 @@
-name: ci
+name: build
 
 on:
   push:
@@ -9,8 +9,6 @@ jobs:
   docker:
     runs-on: ubuntu-latest
     steps:
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
       - name: Login to Docker Hub
@@ -22,5 +20,5 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           push: true
-          tags: michaelirwin244/wasm-github-action-demo:latest
-          platforms: wasi/wasm
+          tags: michaelirwin244/wasm-example:latest
+          platforms: wasi/wasm32
