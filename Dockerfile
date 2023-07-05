@@ -10,8 +10,6 @@ RUN <<EOT bash
         clang
     rustup target add wasm32-wasi
 EOT
-# This line installs WasmEdge including the AOT compiler
-RUN curl -sSf https://raw.githubusercontent.com/WasmEdge/WasmEdge/master/utils/install.sh | bash
 
 FROM buildbase AS build
 COPY . .
@@ -20,9 +18,7 @@ RUN --mount=type=cache,target=/usr/local/cargo/git/db \
     --mount=type=cache,target=/usr/local/cargo/registry/cache \
     --mount=type=cache,target=/usr/local/cargo/registry/index \
     cargo build --target wasm32-wasi --release
-# This line builds the AOT Wasm binary
-RUN /root/.wasmedge/bin/wasmedgec target/wasm32-wasi/release/hello_world.wasm hello_world.wasm
 
 FROM scratch
-ENTRYPOINT [ "hello_world.wasm" ]
-COPY --link --from=build /src/hello_world.wasm /hello_world.wasm
+ENTRYPOINT [ "/hello_world.wasm" ]
+COPY --link --from=build /src/target/wasm32-wasi/release/hello_world.wasm /hello_world.wasm
